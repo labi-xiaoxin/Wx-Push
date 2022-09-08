@@ -1,0 +1,37 @@
+logging:
+  root:
+    level: debug
+  pattern:
+    console: '%d{yyyy-MM-dd-HH:mm:ss} [%thread] %-5level %logger- %msg%n'
+    file: '%d{yyyy-MM-dd-HH:mm:ss} [%thread] %-5level %logger- %msg%n'
+  file:
+    path: /project/log
+    name: ""
+server:
+  port: 8078
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: task
+    password: sE52cdRaNCNNSGiF
+    url: jdbc:mysql://localhost:3306/task?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&llowMultiQueries=true
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 6000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 30000
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      stat-view-servlet:
+        enabled: false
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true # 开启驼峰命名转换
+    use-generated-keys: true

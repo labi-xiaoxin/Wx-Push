@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <script type="text/javascript" charset="utf-8">
+        mui.init();
+    </script>
+    <style>
+        /*----------------mui.showLoading---------------*/
+        .mui-show-loading {
+            position: fixed;
+            padding: 5px;
+            width: 120px;
+            min-height: 120px;
+            top: 45%;
+            left: 50%;
+            margin-left: -60px;
+            background: rgba(0, 0, 0, 0.6);
+            text-align: center;
+            border-radius: 5px;
+            color: #FFFFFF;
+            visibility: hidden;
+            margin: 0;
+            z-index: 2000;
+
+            -webkit-transition-duration: .2s;
+            transition-duration: .2s;
+            opacity: 0;
+            -webkit-transform: scale(0.9) translate(-50%, -50%);
+            transform: scale(0.9) translate(-50%, -50%);
+            -webkit-transform-origin: 0 0;
+            transform-origin: 0 0;
+        }
+
+        .mui-show-loading.loading-visible {
+            opacity: 1;
+            visibility: visible;
+            -webkit-transform: scale(1) translate(-50%, -50%);
+            transform: scale(1) translate(-50%, -50%);
+        }
+
+        .mui-show-loading .mui-spinner {
+            margin-top: 24px;
+            width: 36px;
+            height: 36px;
+        }
+
+        .mui-show-loading .text {
+            line-height: 1.6;
+            font-family: -apple-system-font, "Helvetica Neue", sans-serif;
+            font-size: 14px;
+            margin: 10px 0 0;
+            color: #fff;
+        }
+
+        .mui-show-loading-mask {
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+        }
+
+        .mui-show-loading-mask-hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+<center><h1>微信推送</h1></center>
+<form class="mui-input-group">
+    <div class="mui-input-row">
+        <label>appId</label>
+        <input type="text" class="mui-input-clear" placeholder="请输入测试号appId" id="form.appId">
+    </div>
+    <div class="mui-input-row">
+        <label>appsecret</label>
+        <input type="text" class="mui-input-clear" placeholder="请输入测试号appsecret" id="form.secret">
+    </div>
+    <div class="mui-input-row">
+        <label>微信号ID</label>
+        <input type="text" class="mui-input-clear" placeholder="请输入微信号ID" id="form.userId">
+    </div>
+    <div class="mui-input-row">
+        <label>模版ID</label>
+        <input type="text" class="mui-input-clear" placeholder="请输入模版ID" id="form.templateId">
+    </div>
+    <div class="mui-input-row" style="height:8.75rem">
+        <label>模版内容<br>(注意为json格式)</label>
+        <textarea rows="5" cols="5" placeholder="请输入模版内容" id="form.templateContent"
+                  autoHeight="true"></textarea>
+    </div>
+    <div class="mui-button-row">
+        <button type="button" class="mui-btn" id="search">查询数据</button>
+        <button type="button" class="mui-btn mui-btn-success" id="testPush">测试推送</button>
+        <button type="button" class="mui-btn mui-btn-primary" id="addPush">添加定时推送</button>
+        <button type="button" class="mui-btn mui-btn-danger" id="removePush">删除推送</button>
+    </div>
+</form>
+
+</body>
+<script>
+    //非微信浏览器打开跳转
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (!isWeixin) {
+        window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx450891ba31f516ac"
+    }
+
+    var searchBtn = document.getElementById("search");
+    var testPushBtn = document.getElementById("testPush");
+    var addPushBtn = document.getElementById("addPush");
+    var removePushBtn = document.getElementById("removePush");
+    var host = "http://localhost:8078";
+    /**
+     * 此对象为后端返回空对象
+     */
+    var form = {
+        appId: '',
+        //这里与前端不一样
+        appSecret: '',
+        userId: '',
+        templateId: '',
+        templateContent: ''
+    }
+
+    /**
+     * 获取表单值
+     */
+    function getForm() {
+        return {
+            appId: document.getElementById("form.appId").value,
+            secret: document.getElementById("form.secret").value,
+            userId: document.getElementById("form.userId").value,
+            templateId: document.getElementById("form.templateId").value,
+            templateContent: document.getElementById("form.templateContent").value
+        }
+    }
+
+    /**
+     * @param {Object} object 设置对象
+     */
+    function setForm(object) {
+        document.getElementById("form.appId").value = object.appId;
+        document.getElementById("form.secret").value = object.appSecret;
+        document.getElementById("form.userId").value = object.userId;
+        document.getElementById("form.templateId").value = object.templateId;
+        document.getElementById("form.templateContent").value = object.templateContent;
+    }
+
+    /**
+     * @param {Object} type 查询:1/添加:2
+     */
+    function validateForm(type) {
+        var formObject = getForm();
+        if (type == 1) {
+            if (formObject.appId == '' || formObject.secret == '' || formObject.userId == '' || formObject.templateId == '') {
+                mui.alert("查询请输入appId,secret,userId,templateId!", "校验提示", "确认");
+                return false;
+            }
+        } else if (type == 2) {
+            if (formObject.appId == '' || formObject.secret == '' || formObject.userId == '' || formObject.templateId == '' || formObject.templateContent == '') {
+                mui.alert("添加请输入appId,secret,userId,templateId,templateContent!", "校验提示", "确认");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    //查询按钮监听点击事件
+    searchBtn.addEventListener("click", function () {
+        if (validateForm(1)) {
+            mui.showLoading("正在查询..", "div");
+            mui.ajax(host + '/task/pushTask/getTask', {
+                data: getForm(),
+                dataType: 'json',
+                type: 'post',
+                timeout: 10000,
+                headers: {'Content-Type': 'application/json'},
+                success: function (data) {
+                    mui.hideLoading();
+                    if (data.success) {
+                        setForm(data.data.sendObject);
+                    } else {
+                        mui.alert(data.message, "提示", "确认");
+                    }
+
+                },
+                error: function (xhr, type, errorThrown) {
+                    mui.hideLoading();
+                    mui.alert(errorThrown, "提示", "确认");
+                }
+            });
+
+        }
+    });
+
+    //测试推送
+    testPushBtn.addEventListener("click", function () {
+        if (validateForm(2)) {
+            mui.showLoading("正在推送..", "div");
+            mui.ajax(host + '/test/testPush/test', {
+                data: getForm(),
+                dataType: 'json',
+                type: 'post',
+                timeout: 10000,
+                headers: {'Content-Type': 'application/json'},
+                crossDomain: true,
+                success: function (data) {
+                    mui.hideLoading();
+                    if (data.success) {
+                        mui.alert("测试推送成功", "提示", "确认");
+                    } else {
+                        mui.alert(data.message, "提示", "确认");
+                    }
+
+                },
+                error: function (xhr, type, errorThrown) {
+                    mui.hideLoading();
+                    mui.alert(errorThrown, "提示", "确认");
+                }
+            });
+
+        }
+    });
+
+    //添加定时任务
+    addPushBtn.addEventListener("click", function () {
+        if (validateForm(2)) {
+            mui.showLoading("正在添加..", "div");
+            mui.ajax(host + '/task/pushTask/addPushTask', {
+                data: getForm(),
+                dataType: 'json',
+                type: 'post',
+                timeout: 10000,
+                headers: {'Content-Type': 'application/json'},
+                success: function (data) {
+                    mui.hideLoading();
+                    if (data.success) {
+                        setForm(data.data.sendObject);
+                        mui.alert("添加推送成功", "提示", "确认");
+                    } else {
+                        mui.alert(data.message, "提示", "确认");
+                    }
+
+                },
+                error: function (xhr, type, errorThrown) {
+                    mui.hideLoading();
+                    mui.alert(errorThrown, "提示", "确认");
+                }
+            });
+
+        }
+    });
+
+    //删除定时任务
+    removePushBtn.addEventListener("click", function () {
+        if (validateForm(1)) {
+            mui.showLoading("正在删除..", "div");
+            mui.ajax(host + '/task/pushTask/removeTask', {
+                data: getForm(),
+                dataType: 'json',
+                type: 'post',
+                timeout: 10000,
+                headers: {'Content-Type': 'application/json'},
+                success: function (data) {
+                    mui.hideLoading();
+                    if (data.success) {
+                        setForm(form);
+                        mui.alert("已删除！", "提示", "确认");
+                    } else {
+                        mui.alert(data.message, "提示", "确认");
+                    }
+
+                },
+                error: function (xhr, type, errorThrown) {
+                    mui.hideLoading();
+                    mui.alert(errorThrown, "提示", "确认");
+                }
+            });
+
+        }
+    });
+
+
+    //扩展mui.showLoading
+    (function ($, window) {
+        //显示加载框
+        $.showLoading = function (message, type) {
+            if ($.os.plus && type !== 'div') {
+                $.plusReady(function () {
+                    plus.nativeUI.showWaiting(message);
+                });
+            } else {
+                var html = '';
+                html += '<i class="mui-spinner mui-spinner-white"></i>';
+                html += '<p class="text">' + (message || "数据加载中") + '</p>';
+
+                //遮罩层
+                var mask = document.getElementsByClassName("mui-show-loading-mask");
+                if (mask.length == 0) {
+                    mask = document.createElement('div');
+                    mask.classList.add("mui-show-loading-mask");
+                    document.body.appendChild(mask);
+                    mask.addEventListener("touchmove", function (e) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    });
+                } else {
+                    mask[0].classList.remove("mui-show-loading-mask-hidden");
+                }
+                //加载框
+                var toast = document.getElementsByClassName("mui-show-loading");
+                if (toast.length == 0) {
+                    toast = document.createElement('div');
+                    toast.classList.add("mui-show-loading");
+                    toast.classList.add('loading-visible');
+                    document.body.appendChild(toast);
+                    toast.innerHTML = html;
+                    toast.addEventListener("touchmove", function (e) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    });
+                } else {
+                    toast[0].innerHTML = html;
+                    toast[0].classList.add("loading-visible");
+                }
+            }
+        };
+
+        //隐藏加载框
+        $.hideLoading = function (callback) {
+            if ($.os.plus) {
+                $.plusReady(function () {
+                    plus.nativeUI.closeWaiting();
+                });
+            }
+            var mask = document.getElementsByClassName("mui-show-loading-mask");
+            var toast = document.getElementsByClassName("mui-show-loading");
+            if (mask.length > 0) {
+                mask[0].classList.add("mui-show-loading-mask-hidden");
+            }
+            if (toast.length > 0) {
+                toast[0].classList.remove("loading-visible");
+                callback && callback();
+            }
+        }
+    })(mui, window);
+</script>
+</html>
