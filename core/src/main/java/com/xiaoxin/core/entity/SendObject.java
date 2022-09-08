@@ -1,12 +1,22 @@
 package com.xiaoxin.core.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.validation.constraints.NotNull;
 
 /**
  * @author wangyp
  * @date 2022/08/25
  **/
+@Getter
+@Setter
 public class SendObject {
+    /**
+     * 数据ID
+     **/
+    private Long id;
+
     /**
      * 微信ID
      */
@@ -51,68 +61,4 @@ public class SendObject {
      * 诗歌类型
      */
     private String type;
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getTemplateId() {
-        return templateId;
-    }
-
-    public void setTemplateId(String templateId) {
-        this.templateId = templateId;
-    }
-
-    public String getAppId() {
-        return appId;
-    }
-
-    public void setAppId(String appId) {
-        this.appId = appId;
-    }
-
-    public String getSecret() {
-        return secret;
-    }
-
-    public void setSecret(String secret) {
-        this.secret = secret;
-    }
-
-    public String getTemplateContent() {
-        return templateContent;
-    }
-
-    public void setTemplateContent(String templateContent) {
-        this.templateContent = templateContent;
-    }
-
-    public String getHref() {
-        return href;
-    }
-
-    public void setHref(String href) {
-        this.href = href;
-    }
-
-    public String getAmapKey() {
-        return amapKey;
-    }
-
-    public void setAmapKey(String amapKey) {
-        this.amapKey = amapKey;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 }

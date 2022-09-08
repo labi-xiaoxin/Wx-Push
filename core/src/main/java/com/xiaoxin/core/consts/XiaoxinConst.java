@@ -6,4 +6,9 @@ package com.xiaoxin.core.consts;
  **/
 public class XiaoxinConst {
     public static final String XIAO_XIN_GITEE = "https://gitee.com/Xiaoxinnolabi";
+
+    /**
+     * 默认href跳转地址
+     **/
+    public static final String HOST = "http://localhost:8078/";
 }
