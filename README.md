@@ -19,7 +19,7 @@
 
 ### 2、 进入 测试号管理 页面
 
-![图片](http://mmbiz.qpic.cn/mmbiz_png/BMkwvicD8UticefKMO8dFGPX4PicKvEqf6ZfuQSkw3ZxDMxibYv45ua0e4K9QdBSEPK7G3U5EQbjFMskm7eJG8GiaeA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+![图片](./img/640.png)
 
 **记录appID、appsecret**
 
@@ -27,11 +27,11 @@
 
 ### 3、 新增测试模版
 
-![图片](http://mmbiz.qpic.cn/mmbiz_png/BMkwvicD8UticefKMO8dFGPX4PicKvEqf6ZuEv7vq4qt1picywwPBV4icsOvhsIGyldotEYFTSFRqiaQbQjyOkuPovAQ/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+![图片](./img/3-1.png)
 
-![图片](http://mmbiz.qpic.cn/mmbiz_png/BMkwvicD8UticefKMO8dFGPX4PicKvEqf6ZbbG4qzd3hC3qfEyH4SXNkfvST3ibeQKZRHolSn4UTqnve3XqaOiaTVBQ/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+![图片](./img/3-2.png)
 
-![图片](https://mmbiz.qpic.cn/mmbiz_png/BMkwvicD8Utibz8b8RIbuP0YLXUVjibDdB08BUzSv4FQqYJGWLXUdVO0fBQdjfbdDibPlOypaiaEibOzWwjUFfkZ3cww/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+![图片](./img/3-4.png)
 
 
 
@@ -53,11 +53,12 @@
 {{content.DATA}}
 ```
 
+![图片](./img/3-5.png)
 
 
 ### 4、 添加TA为测试号
 
-![图片](https://mmbiz.qpic.cn/mmbiz_png/BMkwvicD8UticefKMO8dFGPX4PicKvEqf6Z8qHstcYvryKVP8mOYXZdLx66ONfLP1Zh2ibeAFco8ecXdsNHKNhbnfA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+![图片](./img/4-1.png)
 
 **记录这里的微信号**
 
@@ -96,7 +97,7 @@
 - 输入3中新增的测试模版的模版ID
 - 输入5中的推送模版内容
 
-![image-20220907133513830](/Users/wangyiping/Library/Application Support/typora-user-images/image-20220907133513830.png)
+![image-20220907133513830](./img/6-1.png)
 
 
 
